@@ -406,17 +406,7 @@ namespace DatabaseSchemaReader.CodeGen
                 CodeWriterUtils.WriteEntryLogging(classBuilder, methodSignature);
                 WriteGetPropertyColumnPairs();
 
-                var clause = "var setClause = string.Join(\", \", propertyColumnPairs.Select(pcp => $\"{pcp.Value} = @{pcp.Key.Name}\"))";
-                if (table.Columns.Any(c => c.Name == "DeletedTimestamp" ) )
-                {
-                    classBuilder.AppendLine(clause);
-                    classBuilder.AppendLine("                      .Replace(\"@DeletedTimestamp\", entity.DeletedTimestamp == null ? \"null\" : \"LEAST(@DeletedTimestamp, c.\\\"DeletedTimestamp\\\")\")");
-                }
-                else
-                {
-                    classBuilder.AppendLine($"{clause};");
-                }
-
+                classBuilder.AppendLine("var setClause = string.Join(\", \", propertyColumnPairs.Select(pcp => $\"{pcp.Value} = @{pcp.Key.Name}\"));");
                 var thisTableAlias = codeWriterSettings.Namer.NameToAcronym(table.Name);
                 if (!string.IsNullOrEmpty(fromClause))
                 {
